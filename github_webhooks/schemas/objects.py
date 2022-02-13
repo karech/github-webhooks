@@ -20,6 +20,7 @@ class Repository(BaseModel):
     name: str
     full_name: str
     fork: bool
+    url: str
 
     owner: User
     organization: Optional[Organization]
