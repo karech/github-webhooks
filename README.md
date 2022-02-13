@@ -2,8 +2,8 @@
 
 Simple and lightweight micro framework for quick integration with [GitHub
 webhooks][1].  
-It's based on [FastAPI][3] and [pydantic][4], nothing more!
-Async and mypy friendly! 
+It's based on [FastAPI][3] and [pydantic][4], nothing more!  
+Async and mypy friendly. 
 
 [![Run CI](https://github.com/karech/github-webhooks/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/karech/github-webhooks/actions/workflows/ci.yml)  
 [![PyPI](https://img.shields.io/pypi/v/github-webhooks-framework.svg)][2]
