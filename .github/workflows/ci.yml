@@ -26,6 +26,18 @@ jobs:
       with:
         python-version: 3.9
 
+    - name: Get cache paths
+        id: cache-paths
+        run: |
+          echo "::set-output name=pip::$(pip cache dir)"
+
+    - name: Pip cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.cache-paths.outputs.pip }}
+        key: ${{ runner.os }}-pip-cache
+        restore-keys: ${{ runner.os }}-pip-cache
+
     - name: Install Poetry
       run: |
         python -m pip install --upgrade pip
