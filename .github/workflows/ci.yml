@@ -27,9 +27,9 @@ jobs:
         python-version: 3.9
 
     - name: Get cache paths
-        id: cache-paths
-        run: |
-          echo "::set-output name=pip::$(pip cache dir)"
+      id: cache-paths
+      run: |
+        echo "::set-output name=pip::$(pip cache dir)"
 
     - name: Pip cache
       uses: actions/cache@v2
