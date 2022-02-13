@@ -34,7 +34,7 @@ class HandlersRegistry:
         payload_cls, handler = self._handlers[event]
 
         payload_parsed = payload_cls.parse_raw(payload)
-        return await self._call_with_headers(handler, event, payload_parsed, headers=headers)
+        return await self._call_with_headers(handler, payload_parsed, headers=headers)
 
     @staticmethod
     async def _call_with_headers(
