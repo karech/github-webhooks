@@ -1,4 +1,4 @@
-from typing import Any, Optional, Protocol
+from typing import Any, Optional, Protocol, Union
 
 from pydantic import BaseModel
 
@@ -8,12 +8,29 @@ PayloadT = type[BaseModel]
 HandlerResult = Optional[str]
 
 
-class HandlerCallable(Protocol):
-    async def __call__(self, headers: WebhookHeaders, payload: Any) -> HandlerResult:
+class HandlerBasic(Protocol):
+    async def __call__(self, payload: Any) -> HandlerResult:
         # actually payload will be parsed pydantic model
         ...
 
 
-class DefaultHandlerCallable(Protocol):
-    async def __call__(self, event: str, headers: WebhookHeaders, payload: bytes) -> HandlerResult:
+class HandlerWithHeaders(Protocol):
+    async def __call__(self, payload: Any, *, headers: WebhookHeaders) -> HandlerResult:
+        # actually payload will be parsed pydantic model
         ...
+
+
+class DefaultHandlerBasic(Protocol):
+    async def __call__(self, event: str, payload: bytes) -> HandlerResult:
+        ...
+
+
+class DefaultHandlerWithHeaders(Protocol):
+    async def __call__(self, event: str, payload: bytes, *, headers: WebhookHeaders) -> HandlerResult:
+        ...
+
+
+Handler = Union[HandlerBasic, HandlerWithHeaders]
+DefaultHandler = Union[DefaultHandlerBasic, DefaultHandlerWithHeaders]
+AnyHandlerWithHeaders = Union[HandlerWithHeaders, DefaultHandlerWithHeaders]
+AnyHandlerWithoutHeaders = Union[HandlerBasic, DefaultHandlerBasic]

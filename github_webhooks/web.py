@@ -10,7 +10,7 @@ from .schemas import WebhookHeaders
 router = APIRouter()
 
 
-@router.post('/')
+@router.post('/hook')
 async def webhook_handler(request: Request) -> str:
     headers = parse_obj_as(WebhookHeaders, request.headers)
 
@@ -18,7 +18,7 @@ async def webhook_handler(request: Request) -> str:
 
     verify_signature(payload_body, headers, request.app.secret_token)
 
-    result = await request.app.hooks.handle(headers.event, headers, payload_body)
+    result = await request.app.hooks.handle(headers.event, payload_body, headers)
 
     return result or 'OK'
 

@@ -9,6 +9,6 @@ class PingPayload(WebhookCommonPayload):
     hook_id: int
 
 
-async def handle_ping(headers: WebhookHeaders, payload: PingPayload) -> Optional[str]:
+async def handle_ping(payload: PingPayload, headers: WebhookHeaders) -> Optional[str]:
     logging.debug('ping event, headers: %s, payload: %s', headers, payload)
     return 'OK'
