@@ -9,7 +9,6 @@ class User(BaseModel):
 
 class Organization(BaseModel):
     id: int  # noqa: A003
-    type: str  # noqa: A003
     login: str
 
 
