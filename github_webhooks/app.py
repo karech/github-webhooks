@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Any
 
 from fastapi import FastAPI
 
@@ -11,8 +11,8 @@ class App(FastAPI):
     hooks: handlers.HandlersRegistry
 
 
-def create_app(secret_token: Optional[str] = None) -> App:
-    app = App()
+def create_app(secret_token: Optional[str] = None, **app_init_kwargs: Any) -> App:
+    app = App(**app_init_kwargs)
 
     app.hooks = handlers.registry
     app.secret_token = secret_token
