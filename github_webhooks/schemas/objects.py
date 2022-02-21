@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import BaseModel
 
 
@@ -23,4 +21,3 @@ class Repository(BaseModel):
     url: str
 
     owner: User
-    organization: Optional[Organization]
