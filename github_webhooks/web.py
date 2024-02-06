@@ -18,7 +18,7 @@ async def webhook_handler(request: Request) -> str:
 
     verify_signature(payload_body, headers, request.app.secret_token)
 
-    result = await request.app.hooks.handle(headers.event, payload_body, headers)
+    result = await request.app.hooks.handle(headers.event, payload_body, headers, request.query_params)
 
     return result or 'OK'
 

@@ -3,30 +3,31 @@ from typing import Any, Optional, Protocol, Union
 from pydantic import BaseModel
 
 from github_webhooks.schemas import WebhookHeaders
+from starlette.requests import QueryParams
 
 PayloadT = type[BaseModel]
 HandlerResult = Optional[str]
 
 
 class HandlerBasic(Protocol):
-    async def __call__(self, payload: Any) -> HandlerResult:
+    async def __call__(self, payload: Any, query_params: QueryParams) -> HandlerResult:
         # actually payload will be parsed pydantic model
         ...
 
 
 class HandlerWithHeaders(Protocol):
-    async def __call__(self, payload: Any, *, headers: WebhookHeaders) -> HandlerResult:
+    async def __call__(self, payload: Any, *, headers: WebhookHeaders, query_params: QueryParams) -> HandlerResult:
         # actually payload will be parsed pydantic model
         ...
 
 
 class DefaultHandlerBasic(Protocol):
-    async def __call__(self, event: str, payload: bytes) -> HandlerResult:
+    async def __call__(self, event: str, payload: bytes, query_params: QueryParams) -> HandlerResult:
         ...
 
 
 class DefaultHandlerWithHeaders(Protocol):
-    async def __call__(self, event: str, payload: bytes, *, headers: WebhookHeaders) -> HandlerResult:
+    async def __call__(self, event: str, payload: bytes, *, headers: WebhookHeaders, query_params: QueryParams) -> HandlerResult:
         ...
 
 

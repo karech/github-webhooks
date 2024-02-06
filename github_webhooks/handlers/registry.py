@@ -1,6 +1,7 @@
 from typing import Any, Callable, Union, cast
 
 from github_webhooks.schemas import WebhookHeaders
+from starlette.requests import QueryParams
 
 from .default import handle_default
 from .types import AnyHandlerWithHeaders, AnyHandlerWithoutHeaders, DefaultHandler, Handler, HandlerResult, PayloadT
@@ -27,26 +28,27 @@ class HandlersRegistry:
 
         return deco
 
-    async def handle(self, event: str, payload: bytes, headers: WebhookHeaders) -> HandlerResult:
+    async def handle(self, event: str, payload: bytes, headers: WebhookHeaders, query_params: QueryParams) -> HandlerResult:
         if event not in self._handlers:
-            return await self._call_with_headers(self._default_handler, event, payload, headers=headers)
+            return await self._call_with_headers(self._default_handler, event, payload, headers=headers, query_params=query_params)
 
         payload_cls, handler = self._handlers[event]
 
         payload_parsed = payload_cls.parse_raw(payload)
-        return await self._call_with_headers(handler, payload_parsed, headers=headers)
+        return await self._call_with_headers(handler, payload_parsed, headers=headers, query_params=query_params)
 
     @staticmethod
     async def _call_with_headers(
         handler: Union[DefaultHandler, Handler],
         *args: Any,
         headers: WebhookHeaders,
+        query_params: QueryParams,
     ) -> HandlerResult:
         h_varnames = handler.__code__.co_varnames  # type: ignore
 
         if 'headers' in h_varnames:
             handler = cast(AnyHandlerWithHeaders, handler)
-            return await handler(*args, headers=headers)
+            return await handler(*args, headers=headers, query_params=query_params)
 
         handler = cast(AnyHandlerWithoutHeaders, handler)
-        return await handler(*args)
+        return await handler(*args, query_params=query_params)
