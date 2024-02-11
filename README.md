@@ -7,15 +7,15 @@ webhooks][1].
 It's based on [FastAPI][3] and [pydantic][4], nothing more!  
 Async and mypy friendly. 
 
-[![Run CI](https://github.com/karech/github-webhooks/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/karech/github-webhooks/actions/workflows/ci.yml)  
-[![PyPI](https://img.shields.io/pypi/v/github-webhooks-framework.svg)][2]
+[![Run CI](https://github.com/morriz/github-webhooks/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/morriz/github-webhooks/actions/workflows/ci.yml)  
+[![PyPI](https://img.shields.io/pypi/v/github-webhooks-framework2.svg)][2]
 
 
 ## Installation
-Just add `github-webhooks-framework` package.   
+Just add `github-webhooks-framework2` package.   
 Example: 
-* `pip install github-webhooks-framework`
-* `poetry add github-webhooks-framework`
+* `pip install github-webhooks-framework2`
+* `poetry add github-webhooks-framework2`
 
 
 ## Example

@@ -16,4 +16,4 @@ class WebhookHeaders(BaseModel):
 class WebhookCommonPayload(BaseModel):
     sender: User
     repository: Optional[Repository]
-    organization: Optional[Organization]
+    organization: Organization | None = None
