@@ -1,7 +1,8 @@
 from typing import Any, Callable, Union, cast
 
-from github_webhooks.schemas import WebhookHeaders
 from starlette.requests import QueryParams
+
+from github_webhooks.schemas import WebhookHeaders
 
 from .default import handle_default
 from .types import AnyHandlerWithHeaders, AnyHandlerWithoutHeaders, DefaultHandler, Handler, HandlerResult, PayloadT
@@ -28,13 +29,17 @@ class HandlersRegistry:
 
         return deco
 
-    async def handle(self, event: str, payload: bytes, headers: WebhookHeaders, query_params: QueryParams) -> HandlerResult:
+    async def handle(
+        self, event: str, payload: bytes, headers: WebhookHeaders, query_params: QueryParams
+    ) -> HandlerResult:
         if event not in self._handlers:
-            return await self._call_with_headers(self._default_handler, event, payload, headers=headers, query_params=query_params)
+            return await self._call_with_headers(
+                self._default_handler, event, payload, headers=headers, query_params=query_params
+            )
 
         payload_cls, handler = self._handlers[event]
 
-        payload_parsed = payload_cls.parse_raw(payload)
+        payload_parsed = payload_cls.model_validate_json(payload)
         return await self._call_with_headers(handler, payload_parsed, headers=headers, query_params=query_params)
 
     @staticmethod
@@ -51,4 +56,4 @@ class HandlersRegistry:
             return await handler(*args, headers=headers, query_params=query_params)
 
         handler = cast(AnyHandlerWithoutHeaders, handler)
-        return await handler(*args, query_params=query_params)
+        return await handler(*args, query_params=query_params)  # type: ignore

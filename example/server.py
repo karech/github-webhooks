@@ -3,6 +3,7 @@ from typing import Optional
 
 import uvicorn
 from pydantic import BaseModel
+from starlette.requests import QueryParams
 
 from github_webhooks import create_app
 from github_webhooks.schemas import WebhookCommonPayload
@@ -32,7 +33,7 @@ app = create_app(secret_token='super-secret-token')
 
 # Register new handler via deco
 @app.hooks.register('pull_request', PullPayload)
-async def handle_pull_request(payload: PullPayload) -> Optional[str]:
+async def handle_pull_request(payload: PullPayload, query_params: QueryParams) -> Optional[str]:
     logging.info(
         'PR <%s> opened by <%s>\nlink: %s',
         payload.pull_request.title,

@@ -1,0 +1,15 @@
+[MESSAGES CONTROL]
+disable=
+    invalid-name,
+    missing-docstring,
+    missing-module-docstring,
+    missing-timeout,
+    no-name-in-module,
+    redefined-builtin,
+    too-few-public-methods,
+    too-many-arguments,
+    unused-argument,
+    wrong-import-position
+
+[FORMAT]
+max-line-length=120

@@ -1,5 +1,7 @@
 # Python GitHub Webhooks Framework
 
+**NOTE:** Forked from [github_webhooks](https://github.com/karech/github-webhooks) as I needed to access query params from incoming webhooks for identification.
+
 Simple and lightweight micro framework for quick integration with [GitHub
 webhooks][1].  
 It's based on [FastAPI][3] and [pydantic][4], nothing more!  
@@ -106,19 +108,9 @@ async def handler(payload: PullRequestPayload, headers: WebhookHeaders) -> Optio
     ...
 ```  
 
+An example setup can be found in `example/server.py`.
 
-And the last - let's launch it.  
-For example with uvicorn  
-```shell
-uvicorn example:app
-```
-Webhook will be available on http://localhost:8000/hook
-
-That's it!
-Now you have a webhook server, which can handle incoming Github Webhook requests.
-
-
-
+## References:
 [1]: https://developer.github.com/webhooks/
 [2]: https://pypi.python.org/pypi/github-webhooks-framework
 [3]: https://fastapi.tiangolo.com/
@@ -126,3 +118,10 @@ Now you have a webhook server, which can handle incoming Github Webhook requests
 [5]: https://pydantic-docs.helpmanual.io/usage/models/
 [6]: https://docs.github.com/en/developers/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request
 [7]: https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks
+
+## Development
+
+1. Install local venv: `python -m venv .venv`
+2. Activate: `. .venv/bin/activate`
+3. Install deps with `pip install -r requirements.txt -r requirements-test.txt`
+4. When done with packages: `./freeze-requirements.sh`

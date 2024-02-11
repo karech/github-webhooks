@@ -1,9 +1,9 @@
 from typing import Any, Optional, Protocol, Union
 
 from pydantic import BaseModel
+from starlette.requests import QueryParams
 
 from github_webhooks.schemas import WebhookHeaders
-from starlette.requests import QueryParams
 
 PayloadT = type[BaseModel]
 HandlerResult = Optional[str]
@@ -22,13 +22,13 @@ class HandlerWithHeaders(Protocol):
 
 
 class DefaultHandlerBasic(Protocol):
-    async def __call__(self, event: str, payload: bytes, query_params: QueryParams) -> HandlerResult:
-        ...
+    async def __call__(self, event: str, payload: bytes, query_params: QueryParams) -> HandlerResult: ...
 
 
 class DefaultHandlerWithHeaders(Protocol):
-    async def __call__(self, event: str, payload: bytes, *, headers: WebhookHeaders, query_params: QueryParams) -> HandlerResult:
-        ...
+    async def __call__(
+        self, event: str, payload: bytes, *, headers: WebhookHeaders, query_params: QueryParams
+    ) -> HandlerResult: ...
 
 
 Handler = Union[HandlerBasic, HandlerWithHeaders]

@@ -1,0 +1,12 @@
+{
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.addMissingImports": "always",
+      "source.fixAll": "always",
+      "source.organizeImports": "always"
+    },
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.tabSize": 4
+  },
+  "black-formatter.importStrategy": "fromEnvironment",
+}

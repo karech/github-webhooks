@@ -9,66 +9,52 @@ on:
     branches:
       - main
 
-env:
-  PROJECT_NAME: github_webhooks
-  EXAMPLE_NAME: example
-
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Python 3.11
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
           python-version: 3.11
 
       - name: Get cache paths
         id: cache-paths
-        run: |
-          echo "::set-output name=pip::$(pip cache dir)"
+        run: echo "::set-output name=pip::$(pip cache dir)"
 
       - name: Pip cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ${{ steps.cache-paths.outputs.pip }}
           key: ${{ runner.os }}-pip-cache
           restore-keys: ${{ runner.os }}-pip-cache
 
-      - name: Install Poetry
-        run: |
-          python -m pip install --upgrade pip
-          pip install poetry
-
       - name: Install dependencies
         run: |
-          poetry config virtualenvs.create true
-          poetry install
+          python -m venv .venv
+          . .venv/bin/activate
+          echo PATH=$PATH >> $GITHUB_ENV
+          pip install -r requirements-prod.txt -r requirements-test-prod.txt
 
-      # Linters
-      - name: Lint with isort
-        run: |
-          poetry run isort --check ${{ env.PROJECT_NAME }}
-          poetry run isort --check ${{ env.EXAMPLE_NAME }}
-
-      - name: Lint with black
-        run: |
-          poetry run black --check ${{ env.PROJECT_NAME }}
-          poetry run black --check ${{ env.EXAMPLE_NAME }}
-
-      - name: Lint with flake8
-        run: |
-          poetry run flake8 ${{ env.PROJECT_NAME }}
-          poetry run flake8 ${{ env.EXAMPLE_NAME }}
-
-      - name: Lint with mypy
-        run: |
-          poetry run mypy ${{ env.PROJECT_NAME }}
-          poetry run mypy ${{ env.EXAMPLE_NAME }}
+      - name: Lint
+        run: bin/lint.sh
 
       - name: build
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
-          poetry build -n
-          poetry publish -n -u __token__ -p ${{ secrets.PYPI_TOKEN }}
+          pip install --upgrade build
+          python -m build
+
+      # - name: publish-test
+      #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      #   run: |
+      #     pip install --upgrade twine
+      #     python -m twine upload -u __token__ -p ${{ secrets.PYPI_TOKEN_TEST }} --repository testpypi dist/*
+
+      - name: publish
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          pip install --upgrade twine
+          python -m twine upload -u __token__ -p ${{ secrets.PYPI_TOKEN }} dist/*

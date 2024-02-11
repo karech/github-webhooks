@@ -1,0 +1,9 @@
+black==24.1.1
+build==1.0.3
+flake8==6.1.0
+isort==5.13.2
+mypy==1.8.0
+pylint==3.0.3
+pyproject-flake8==6.1.0
+uvicorn==0.27.1
+twine==4.0.2

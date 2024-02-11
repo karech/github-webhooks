@@ -1,5 +1,6 @@
 import logging
 from typing import Optional
+
 from starlette.requests import QueryParams
 
 from github_webhooks.schemas import WebhookCommonPayload, WebhookHeaders
