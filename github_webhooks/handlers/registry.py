@@ -1,5 +1,6 @@
 from typing import Any, Callable, Union, cast
 
+from fastapi import BackgroundTasks
 from starlette.requests import QueryParams
 
 from github_webhooks.schemas import WebhookHeaders
@@ -30,17 +31,29 @@ class HandlersRegistry:
         return deco
 
     async def handle(
-        self, event: str, payload: bytes, headers: WebhookHeaders, query_params: QueryParams
+        self,
+        event: str,
+        payload: bytes,
+        headers: WebhookHeaders,
+        query_params: QueryParams,
+        background_tasks: BackgroundTasks,
     ) -> HandlerResult:
         if event not in self._handlers:
             return await self._call_with_headers(
-                self._default_handler, event, payload, headers=headers, query_params=query_params
+                self._default_handler,
+                event,
+                payload,
+                headers=headers,
+                query_params=query_params,
+                background_tasks=background_tasks,
             )
 
         payload_cls, handler = self._handlers[event]
 
         payload_parsed = payload_cls.model_validate_json(payload)
-        return await self._call_with_headers(handler, payload_parsed, headers=headers, query_params=query_params)
+        return await self._call_with_headers(
+            handler, payload_parsed, headers=headers, query_params=query_params, background_tasks=background_tasks
+        )
 
     @staticmethod
     async def _call_with_headers(
@@ -48,12 +61,13 @@ class HandlersRegistry:
         *args: Any,
         headers: WebhookHeaders,
         query_params: QueryParams,
+        background_tasks: BackgroundTasks,
     ) -> HandlerResult:
         h_varnames = handler.__code__.co_varnames  # type: ignore
 
         if 'headers' in h_varnames:
             handler = cast(AnyHandlerWithHeaders, handler)
-            return await handler(*args, headers=headers, query_params=query_params)
+            return await handler(*args, headers=headers, query_params=query_params, background_tasks=background_tasks)
 
         handler = cast(AnyHandlerWithoutHeaders, handler)
-        return await handler(*args, query_params=query_params)  # type: ignore
+        return await handler(*args, query_params=query_params, background_tasks=background_tasks)  # type: ignore

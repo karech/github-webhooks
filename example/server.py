@@ -2,6 +2,7 @@ import logging
 from typing import Optional
 
 import uvicorn
+from fastapi import BackgroundTasks
 from pydantic import BaseModel
 from starlette.requests import QueryParams
 
@@ -33,7 +34,9 @@ app = create_app(secret_token='super-secret-token')
 
 # Register new handler via deco
 @app.hooks.register('pull_request', PullPayload)
-async def handle_pull_request(payload: PullPayload, query_params: QueryParams) -> Optional[str]:
+async def handle_pull_request(
+    payload: PullPayload, query_params: QueryParams, background_tasks: BackgroundTasks
+) -> Optional[str]:
     logging.info(
         'PR <%s> opened by <%s>\nlink: %s',
         payload.pull_request.title,

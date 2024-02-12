@@ -1,5 +1,6 @@
 from typing import Any, Optional, Protocol, Union
 
+from fastapi import BackgroundTasks
 from pydantic import BaseModel
 from starlette.requests import QueryParams
 
@@ -10,24 +11,36 @@ HandlerResult = Optional[str]
 
 
 class HandlerBasic(Protocol):
-    async def __call__(self, payload: Any, query_params: QueryParams) -> HandlerResult:
+    async def __call__(
+        self, payload: Any, query_params: QueryParams, background_tasks: BackgroundTasks
+    ) -> HandlerResult:
         # actually payload will be parsed pydantic model
         ...
 
 
 class HandlerWithHeaders(Protocol):
-    async def __call__(self, payload: Any, *, headers: WebhookHeaders, query_params: QueryParams) -> HandlerResult:
+    async def __call__(
+        self, payload: Any, *, headers: WebhookHeaders, query_params: QueryParams, background_tasks: BackgroundTasks
+    ) -> HandlerResult:
         # actually payload will be parsed pydantic model
         ...
 
 
 class DefaultHandlerBasic(Protocol):
-    async def __call__(self, event: str, payload: bytes, query_params: QueryParams) -> HandlerResult: ...
+    async def __call__(
+        self, event: str, payload: bytes, query_params: QueryParams, background_tasks: BackgroundTasks
+    ) -> HandlerResult: ...
 
 
 class DefaultHandlerWithHeaders(Protocol):
     async def __call__(
-        self, event: str, payload: bytes, *, headers: WebhookHeaders, query_params: QueryParams
+        self,
+        event: str,
+        payload: bytes,
+        *,
+        headers: WebhookHeaders,
+        query_params: QueryParams,
+        background_tasks: BackgroundTasks,
     ) -> HandlerResult: ...
 
 

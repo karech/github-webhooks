@@ -2,7 +2,7 @@ import hmac
 import logging
 from typing import Optional
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from pydantic import parse_obj_as
 
 from .schemas import WebhookHeaders
@@ -11,14 +11,19 @@ router = APIRouter()
 
 
 @router.post('/hook')
-async def webhook_handler(request: Request) -> str:
+async def webhook_handler(
+    request: Request,
+    background_tasks: BackgroundTasks,
+) -> str:
     headers = parse_obj_as(WebhookHeaders, request.headers)
 
     payload_body: bytes = await request.body()
 
     verify_signature(payload_body, headers, request.app.secret_token)
 
-    result = await request.app.hooks.handle(headers.event, payload_body, headers, request.query_params)
+    result = await request.app.hooks.handle(
+        headers.event, payload_body, headers, request.query_params, background_tasks
+    )
 
     return result or 'OK'
 
